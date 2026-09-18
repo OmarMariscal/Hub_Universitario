@@ -1,0 +1,37 @@
+name: Backend CI - Integración Continua
+
+on:
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'backend/**' # Solo se ejecuta si hay cambios en el backend
+  push:
+    branches: [ main ]
+    paths:
+      - 'backend/**'
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    
+    # Define la carpeta de trabajo por defecto para todos los comandos
+    defaults:
+      run:
+        working-directory: ./backend
+
+    steps:
+    - name: 📥 Clonar repositorio
+      uses: actions/checkout@v4
+
+    - name: ⚙️ Configurar Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20' # Versión estable de Node
+        cache: 'npm'
+        cache-dependency-path: ./backend/package-lock.json
+
+    - name: 📦 Instalar dependencias
+      run: npm ci # Instalación limpia basada en package-lock.json
+
+    - name: 🧪 Ejecutar Pruebas (TDD)
+      run: npm run test
