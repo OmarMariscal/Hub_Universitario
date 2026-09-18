@@ -10,31 +10,19 @@ export interface RegisterAcademicActivityDto {
   description?: string;
 }
 
-const ALLOWED_PRIORITIES = ['LOW', 'MEDIUM', 'HIGH'] as const;
+const ALLOWED_PRIORITIES: readonly string[] = ['LOW', 'MEDIUM', 'HIGH'];
+const REQUIRED_FIELDS: readonly (keyof RegisterAcademicActivityDto)[] = [
+  'title',
+  'course',
+  'dueDate',
+  'priority',
+];
 
 export class RegisterAcademicActivityUseCase {
   constructor(private readonly repository: IAcademicActivityRepository) {}
 
   async execute(dto: RegisterAcademicActivityDto): Promise<AcademicActivity> {
-    if (!dto.title || (typeof dto.title === 'string' && dto.title.trim() === '')) {
-      throw new Error('El campo title es obligatorio');
-    }
-
-    if (!dto.course || (typeof dto.course === 'string' && dto.course.trim() === '')) {
-      throw new Error('El campo course es obligatorio');
-    }
-
-    if (!dto.dueDate) {
-      throw new Error('El campo dueDate es obligatorio');
-    }
-
-    if (!dto.priority) {
-      throw new Error('El campo priority es obligatorio');
-    }
-
-    if (!ALLOWED_PRIORITIES.includes(dto.priority as any)) {
-      throw new Error('El valor proporcionado para priority no es válido');
-    }
+    this.validateDto(dto);
 
     const activity = new AcademicActivity({
       id: randomUUID(),
@@ -50,5 +38,18 @@ export class RegisterAcademicActivityUseCase {
     await this.repository.save(activity);
 
     return activity;
+  }
+
+  private validateDto(dto: RegisterAcademicActivityDto): void {
+    for (const field of REQUIRED_FIELDS) {
+      const value = dto[field];
+      if (!value || (typeof value === 'string' && value.trim() === '')) {
+        throw new Error(`El campo ${field} es obligatorio`);
+      }
+    }
+
+    if (!ALLOWED_PRIORITIES.includes(dto.priority)) {
+      throw new Error('El valor proporcionado para priority no es válido');
+    }
   }
 }
