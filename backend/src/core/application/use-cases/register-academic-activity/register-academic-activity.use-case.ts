@@ -10,6 +10,8 @@ export interface RegisterAcademicActivityDto {
   description?: string;
 }
 
+const ALLOWED_PRIORITIES = ['LOW', 'MEDIUM', 'HIGH'] as const;
+
 export class RegisterAcademicActivityUseCase {
   constructor(private readonly repository: IAcademicActivityRepository) {}
 
@@ -28,6 +30,10 @@ export class RegisterAcademicActivityUseCase {
 
     if (!dto.priority) {
       throw new Error('El campo priority es obligatorio');
+    }
+
+    if (!ALLOWED_PRIORITIES.includes(dto.priority as any)) {
+      throw new Error('El valor proporcionado para priority no es válido');
     }
 
     const activity = new AcademicActivity({
