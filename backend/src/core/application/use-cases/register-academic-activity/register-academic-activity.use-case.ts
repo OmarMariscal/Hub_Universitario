@@ -14,6 +14,22 @@ export class RegisterAcademicActivityUseCase {
   constructor(private readonly repository: IAcademicActivityRepository) {}
 
   async execute(dto: RegisterAcademicActivityDto): Promise<AcademicActivity> {
+    if (!dto.title || (typeof dto.title === 'string' && dto.title.trim() === '')) {
+      throw new Error('El campo title es obligatorio');
+    }
+
+    if (!dto.course || (typeof dto.course === 'string' && dto.course.trim() === '')) {
+      throw new Error('El campo course es obligatorio');
+    }
+
+    if (!dto.dueDate) {
+      throw new Error('El campo dueDate es obligatorio');
+    }
+
+    if (!dto.priority) {
+      throw new Error('El campo priority es obligatorio');
+    }
+
     const activity = new AcademicActivity({
       id: randomUUID(),
       title: dto.title,
