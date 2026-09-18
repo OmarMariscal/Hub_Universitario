@@ -45,4 +45,25 @@ describe('RegisterAcademicActivityUseCase', () => {
     // Act & Assert: debe lanzar error indicando que title es obligatorio
     await expect(useCase.execute(dtoSinTitle as any)).rejects.toThrow(/title/i);
   });
+
+  it('debe rechazar la creación si el campo priority tiene un valor no permitido (CA-4, CA-6)', async () => {
+    // Arrange: DTO con priority no permitida ('URGENT') usando as any para simular payload inválido
+    const dtoPrioridadInvalida = {
+      title: 'Presentar proyecto final',
+      course: 'Ingeniería de Software',
+      dueDate: new Date('2026-11-05T09:00:00'),
+      priority: 'URGENT',
+    };
+
+    const repositoryStub = {
+      save: jest.fn().mockResolvedValue(undefined),
+    };
+
+    const useCase = new RegisterAcademicActivityUseCase(repositoryStub as any);
+
+    // Act & Assert: debe lanzar error indicando que priority no es un valor permitido
+    await expect(
+      useCase.execute(dtoPrioridadInvalida as any),
+    ).rejects.toThrow(/priority/i);
+  });
 });
