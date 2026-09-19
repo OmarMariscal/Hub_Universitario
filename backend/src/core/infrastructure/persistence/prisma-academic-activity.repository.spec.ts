@@ -1,3 +1,5 @@
+import 'dotenv/config';
+import { PrismaPg } from '@prisma/adapter-pg';
 import { AcademicActivity } from '../../domain/entities/academic-activity.entity';
 import { PrismaClient } from '../../../../generated/prisma/client';
 import { PrismaAcademicActivityRepository } from './prisma-academic-activity.repository';
@@ -6,7 +8,8 @@ describe('PrismaAcademicActivityRepository (Integration)', () => {
   let prisma: PrismaClient;
 
   beforeEach(async () => {
-    prisma = new PrismaClient();
+    const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! });
+    prisma = new PrismaClient({ adapter });
     await prisma.academicActivity.deleteMany();
   });
 
