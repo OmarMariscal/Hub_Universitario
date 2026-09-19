@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import { Module } from '@nestjs/common';
 import { PrismaPg } from '@prisma/adapter-pg';
-import { PrismaClient } from '../../../../generated/prisma/client';
+import { PrismaClient } from '../../../generated/prisma/client';
 import { IAcademicActivityRepository } from '../../application/ports/academic-activity.repository';
 import { RegisterAcademicActivityUseCase } from '../../application/use-cases/register-academic-activity/register-academic-activity.use-case';
 import { PrismaAcademicActivityRepository } from '../persistence/prisma-academic-activity.repository';
@@ -21,7 +21,10 @@ import { AcademicActivityController } from '../http/academic-activity.controller
     },
     {
       provide: 'IAcademicActivityRepository',
-      useClass: PrismaAcademicActivityRepository,
+      useFactory: (prisma: PrismaClient) => {
+        return new PrismaAcademicActivityRepository(prisma);
+      },
+      inject: [PrismaClient],
     },
     {
       provide: RegisterAcademicActivityUseCase,

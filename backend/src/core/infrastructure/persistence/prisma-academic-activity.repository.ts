@@ -1,6 +1,6 @@
 import { AcademicActivity } from '../../domain/entities/academic-activity.entity';
 import { IAcademicActivityRepository } from '../../application/ports/academic-activity.repository';
-import { PrismaClient } from '../../../../generated/prisma/client';
+import { PrismaClient } from '../../../generated/prisma/client';
 
 export class PrismaAcademicActivityRepository
   implements IAcademicActivityRepository

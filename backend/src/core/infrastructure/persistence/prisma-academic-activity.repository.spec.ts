@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { AcademicActivity } from '../../domain/entities/academic-activity.entity';
-import { PrismaClient } from '../../../../generated/prisma/client';
+import { PrismaClient } from '../../../generated/prisma/client';
 import { PrismaAcademicActivityRepository } from './prisma-academic-activity.repository';
 
 describe('PrismaAcademicActivityRepository (Integration)', () => {
