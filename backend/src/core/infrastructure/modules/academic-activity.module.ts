@@ -7,15 +7,17 @@ import { RegisterAcademicActivityUseCase } from '../../application/use-cases/reg
 import { PrismaAcademicActivityRepository } from '../persistence/prisma-academic-activity.repository';
 import { AcademicActivityController } from '../http/academic-activity.controller';
 
-const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! });
-const prismaClient = new PrismaClient({ adapter });
-
 @Module({
   controllers: [AcademicActivityController],
   providers: [
     {
       provide: PrismaClient,
-      useValue: prismaClient,
+      useFactory: () => {
+        const adapter = new PrismaPg({
+          connectionString: process.env.DATABASE_URL!,
+        });
+        return new PrismaClient({ adapter });
+      },
     },
     {
       provide: 'IAcademicActivityRepository',

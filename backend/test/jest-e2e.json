@@ -8,5 +8,9 @@
   },
   "moduleNameMapper": {
     "^(\\.{1,2}/.*)\\.js$": "$1"
-  }
+  },
+  "collectCoverageFrom": [
+    "src/core/infrastructure/http/**/*.ts",
+    "src/core/infrastructure/modules/**/*.ts"
+  ]
 }
