@@ -5,9 +5,24 @@
 
 generator client {
   provider = "prisma-client"
-  output   = "../generated/prisma"
+  output   = "../src/generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
+}
+
+model AcademicActivity {
+  id          String   @id
+  title       String
+  description String?
+  course      String
+  dueDate     DateTime
+  status      String
+  priority    String
+  source      String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("academic_activities")
 }
