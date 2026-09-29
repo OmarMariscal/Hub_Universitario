@@ -53,3 +53,12 @@ Para asegurar la paralelización del trabajo en este primer incremento, las resp
 
 ## 🌿 Flujo de Trabajo (GitHub Flow)
 Se prohíben los commits directos a main. Toda nueva funcionalidad o prueba se desarrolla en una rama específica (ej. feature/HU-01-registrar-actividad). Se integran los cambios mediante Pull Requests, requiriendo la aprobación de QA tras validar la ejecución de todas las suites de pruebas automatizadas y la cobertura de los criterios de aceptación.
+## Base de datos local con Docker
+Con Docker Desktop abierto, ejecuta desde la raiz del proyecto:
+
+docker compose up -d        (iniciar)
+docker compose logs -f db    (ver registros; salir con Ctrl+C)
+docker compose down         (detener)
+
+Para las migraciones: configura DATABASE_URL en backend/.env; entra a backend y ejecuta npm ci y npm exec prisma migrate dev.
+
