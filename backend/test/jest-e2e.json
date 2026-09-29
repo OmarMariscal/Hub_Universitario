@@ -1,16 +1,13 @@
 {
   "moduleFileExtensions": ["js", "json", "ts"],
-  "rootDir": ".",
+  "rootDir": "..",
   "testEnvironment": "node",
   "testRegex": ".e2e-spec.ts$",
   "transform": {
     "^.+\\.(t|j)s$": "ts-jest"
   },
   "moduleNameMapper": {
-    "^(\\.{1,2}/.*)\\.js$": "$1"
-  },
-  "collectCoverageFrom": [
-    "src/core/infrastructure/http/**/*.ts",
-    "src/core/infrastructure/modules/**/*.ts"
-  ]
+    "^@prisma/client/runtime/client$": "<rootDir>/node_modules/@prisma/client/runtime/client.js",
+    "^(\\./.*)\\.js$": "$1"
+  }
 }
