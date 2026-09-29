@@ -3,11 +3,8 @@ import { ICourseRepository } from '../../../core/domain/ports/course.repository.
 import { Course } from '../../../../core/domain/entities/course.entity';
 import { randomUUID } from 'crypto';
 
-interface RegisterCourseDto {
-  name: string;
-  professor?: string;
-  section?: string;
-}
+import { RegisterCourseDto } from '../../dtos/register-course.dto';
+
 
 export class RegisterCourseUseCase {
   constructor(private readonly courseRepository: ICourseRepository) {}
