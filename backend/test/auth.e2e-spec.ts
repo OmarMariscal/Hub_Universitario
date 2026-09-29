@@ -99,4 +99,45 @@ describe('AuthController (e2e) - HU-02', () => {
 
     expect(response.status).toBe(400);
   });
+
+  it('POST /auth/login - Inicio de sesión exitoso (200 OK)', async () => {
+    const response = await request(app.getHttpServer())
+      .post('/auth/login')
+      .send({
+        email: uniqueEmail,
+        password: 'SecurePassword123!',
+      });
+
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty('accessToken');
+    expect(response.body.user).toMatchObject({
+      id: expect.any(String),
+      firstName: 'Omar Jesús',
+      lastName: 'Mariscal Rodríguez',
+      email: uniqueEmail,
+    });
+    expect(response.body.user).not.toHaveProperty('password');
+  });
+
+  it('POST /auth/login - Fallo por contraseña incorrecta (401 Unauthorized)', async () => {
+    const response = await request(app.getHttpServer())
+      .post('/auth/login')
+      .send({
+        email: uniqueEmail,
+        password: 'PasswordIncorrecta999!',
+      });
+
+    expect(response.status).toBe(401);
+    expect(response.body.message).toBe('Credenciales inválidas');
+  });
+
+  it('POST /auth/login - Fallo por campo obligatorio ausente (400 Bad Request)', async () => {
+    const response = await request(app.getHttpServer())
+      .post('/auth/login')
+      .send({
+        email: uniqueEmail,
+      });
+
+    expect(response.status).toBe(400);
+  });
 });
