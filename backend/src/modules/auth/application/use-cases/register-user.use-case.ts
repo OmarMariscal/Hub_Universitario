@@ -26,31 +26,47 @@ export class RegisterUserUseCase {
   ) {}
 
   async execute(command: RegisterUserCommand): Promise<UserResponse> {
-    if (!command.email || !command.firstName || !command.lastName || !command.password || !command.confirmPassword) {
-      throw new BadRequestException('Todos los campos obligatorios deben ser proporcionados');
-    }
+    this.validateRequiredFields(command);
+    this.validatePasswordMatch(command.password, command.confirmPassword);
 
-    if (command.password !== command.confirmPassword) {
-      throw new BadRequestException('Las contraseñas no coinciden');
-    }
-
-    const existingUser = await this.userRepository.findByEmail(command.email);
-    if (existingUser) {
-      throw new ConflictException('El correo ya se encuentra registrado');
-    }
+    await this.ensureEmailIsUnique(command.email);
 
     const hashedPassword = await this.passwordHasher.hash(command.password);
 
     const user = new User({
       id: randomUUID(),
-      firstName: command.firstName,
-      lastName: command.lastName,
-      email: command.email,
+      firstName: command.firstName.trim(),
+      lastName: command.lastName.trim(),
+      email: command.email.toLowerCase().trim(),
       password: hashedPassword,
     });
 
     await this.userRepository.save(user);
 
+    return this.toResponse(user);
+  }
+
+  private validateRequiredFields(command: RegisterUserCommand): void {
+    const { firstName, lastName, email, password, confirmPassword } = command;
+    if (!firstName || !lastName || !email || !password || !confirmPassword) {
+      throw new BadRequestException('Todos los campos obligatorios deben ser proporcionados');
+    }
+  }
+
+  private validatePasswordMatch(password: string, confirmPassword: string): void {
+    if (password !== confirmPassword) {
+      throw new BadRequestException('Las contraseñas no coinciden');
+    }
+  }
+
+  private async ensureEmailIsUnique(email: string): Promise<void> {
+    const existingUser = await this.userRepository.findByEmail(email);
+    if (existingUser) {
+      throw new ConflictException('El correo ya se encuentra registrado');
+    }
+  }
+
+  private toResponse(user: User): UserResponse {
     return {
       id: user.id,
       firstName: user.firstName,
@@ -59,3 +75,4 @@ export class RegisterUserUseCase {
     };
   }
 }
+

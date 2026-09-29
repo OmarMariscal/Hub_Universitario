@@ -1,3 +1,4 @@
+/* oxlint-disable typescript/unbound-method */
 import { BadRequestException, ConflictException } from '@nestjs/common';
 import { RegisterUserUseCase } from './register-user.use-case';
 import { IUserRepository } from '../../../../core/domain/ports/user.repository.port';
