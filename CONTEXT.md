@@ -5,18 +5,18 @@ Hub Universitario Personal es una plataforma web para centralizar, organizar, pr
 El Hub no reemplaza a Google Classroom ni a otros LMS. Funciona como una capa de organización y productividad sobre la información académica.
 La visión futura contempla integrar fuentes externas, principalmente Google Classroom, y posteriormente otras herramientas como Calendar, Notion, Moodle, Pomodoro, bots e IA.
 
-## 2. Alcance actual: Sprint 1
-El Sprint 1 tiene como objetivo construir la primera funcionalidad y establecer la base técnica y de calidad del proyecto.
-La única funcionalidad de negocio actual es:
-**HU-01 — Registrar una actividad académica**
-Como estudiante, quiero registrar manualmente una actividad académica proporcionando su información principal, para llevar un control de mis pendientes aunque la actividad no provenga de una plataforma externa.
+## 2. Alcance actual: Sprint 1 y Sprint 2
+El Sprint 1 tuvo como objetivo construir la primera funcionalidad y establecer la base técnica y de calidad del proyecto (HU-01 — Registrar una actividad académica). El Sprint 2 amplía el núcleo del sistema incorporando la gestión de identidad, autenticación segura y gestión de asignaturas:
 
-**Fuera de alcance de Sprint 1 (No implementar):**
-Google Classroom, Moodle, Calendar, Notion, Pomodoro, bots, IA, dashboard, matriz visual de priorización, planificación avanzada, microservicios completos.
-La arquitectura debe permitir evolución futura, pero no implementar funcionalidades futuras por anticipación.
+- HU-02 — Registrar un nuevo estudiante: Como estudiante aspirante, quiero registrarme proporcionando mis datos personales y credenciales para poder acceder a mi panel académico personalizado.
+- HU-03 — Iniciar sesión en el sistema: Como estudiante registrado, quiero iniciar sesión con mis credenciales para acceder de forma segura a mi espacio de trabajo académico mediante un token JWT.
+- HU-04 — Registrar una materia académica: Como estudiante autenticado, quiero registrar una nueva asignatura proporcionando su nombre y datos complementarios para organizar mis materias y actividades del semestre.
+
+Fuera de alcance actual (No implementar): Google Classroom, Moodle, Calendar, Notion, Pomodoro, bots, IA (salvo análisis futuros), matriz visual avanzada de priorización, microservicios completos.
+
 
 ## 3. Modelo de dominio
-La entidad principal es: `AcademicActivity`
+Entidad: `AcademicActivity`
 Campos:
 - id: UUID
 - title: string
@@ -27,11 +27,30 @@ Campos:
 - priority: LOW | MEDIUM | HIGH
 - source: MANUAL | CLASSROOM
 
-**Reglas de HU-01:**
-Una actividad creada manualmente debe iniciar con: `status = PENDING` y `source = MANUAL`.
-`title`, `course`, `dueDate` y `priority` son obligatorios. `description` es opcional.
-La actividad debe rechazarse cuando falte información obligatoria o se utilicen valores no permitidos.
-No inventar nuevas reglas de negocio sin justificación (Ej. no asumir que una fecha pasada es inválida si el requisito no lo establece).
+Nuevas entidades para el sprint 2:
+
+`User`:
+id: UUID
+email: string (único)
+password: string (cifrado)
+firstName: string
+lastName: string
+courses: Course[]
+
+`Course`:
+id: UUID
+name: string
+professor: string | optional
+section: string | optional
+userId: UUID (relación con User)
+
+
+**Reglas de negocio por Historia**:
+HU-01: Actividad manual inicia con status = PENDING y source = MANUAL. title, course, dueDate, priority obligatorios.
+HU-02: firstName, lastName, email, password, confirmPassword obligatorios. Correo único. Contraseñas deben coincidir y cumplir seguridad mínima.
+HU-03: email y password obligatorios. Credenciales válidas emiten token JWT de acceso.
+HU-04: name obligatorio. professor y section opcionales. Asociada automáticamente al userId del estudiante autenticado mediante JWT Guard.
+
 
 ## 4. Futuro de la priorización
 El diferenciador previsto del Hub será un dashboard de priorización. La futura matriz podrá utilizar conceptos como urgencia e importancia, pero todavía no está definida.
