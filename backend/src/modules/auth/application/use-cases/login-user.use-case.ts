@@ -4,7 +4,6 @@ import { IPasswordHasher } from '../../../../core/domain/ports/password-hasher.p
 import { ITokenService } from '../../../../core/domain/ports/token.service.port';
 
 @Injectable()
-
 export class LoginUserUseCase {
   constructor(
     @Inject('IUserRepository') private readonly userRepository: IUserRepository,
@@ -12,32 +11,29 @@ export class LoginUserUseCase {
     @Inject('ITokenService') private readonly tokenService: ITokenService,
   ) {}
 
+  private throwInvalidCredentials(): never {
+    throw new UnauthorizedException('Credenciales inválidas');
+  }
+
   async execute(email: string, password: string): Promise<any> {
-    // Validate required fields
     if (!email || !password) {
       throw new BadRequestException('Todos los campos obligatorios deben ser proporcionados');
     }
 
-    // Find user by email
     const user = await this.userRepository.findByEmail(email);
     if (!user) {
-      // Do not reveal whether email or password is incorrect
-      throw new UnauthorizedException('Credenciales inválidas');
+      this.throwInvalidCredentials();
     }
 
-    // Verify password
     const passwordMatches = await this.passwordHasher.compare(password, user.password);
     if (!passwordMatches) {
-      throw new UnauthorizedException('Credenciales inválidas');
+      this.throwInvalidCredentials();
     }
 
-    // Generate JWT token
-    const token = await this.tokenService.sign({ sub: user.id, email: user.email });
-
-    // Return user data without password
+    const accessToken = await this.tokenService.sign({ sub: user.id, email: user.email });
     const { id, firstName, lastName, email: userEmail } = user;
     return {
-      accessToken: token,
+      accessToken,
       user: { id, firstName, lastName, email: userEmail },
     };
   }
