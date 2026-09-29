@@ -1,5 +1,5 @@
 import { BadRequestException } from '@nestjs/common';
-import { RegisterCourseUseCase } from '../../use-cases/register-course.use-case';
+import { RegisterCourseUseCase } from './register-course.use-case';
 
 describe('RegisterCourseUseCase (RED)', () => {
   const mockCourseRepository = {
