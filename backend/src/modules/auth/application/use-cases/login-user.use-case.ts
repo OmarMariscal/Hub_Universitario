@@ -1,7 +1,7 @@
 import { Injectable, BadRequestException, UnauthorizedException, Inject } from '@nestjs/common';
-import { IUserRepository } from '../../../../core/domain/ports/user.repository.port';
-import { IPasswordHasher } from '../../../../core/domain/ports/password-hasher.port';
-import { ITokenService } from '../../../../core/domain/ports/token.service.port';
+import type { IUserRepository } from '../../../../core/domain/ports/user.repository.port';
+import type { IPasswordHasher } from '../../../../core/domain/ports/password-hasher.port';
+import type { ITokenService } from '../../../../core/domain/ports/token.service.port';
 
 @Injectable()
 export class LoginUserUseCase {

@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
+import { PassportModule } from '@nestjs/passport';
 import { AuthController } from './presentation/controllers/auth.controller';
 import { RegisterUserUseCase } from './application/use-cases/register-user.use-case';
 import { LoginUserUseCase } from './application/use-cases/login-user.use-case';
@@ -11,6 +13,8 @@ import { JwtAuthGuard } from './infrastructure/guards/jwt-auth.guard';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
+    PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.register({
       secret: process.env.JWT_SECRET || 'defaultSecret',
       signOptions: { expiresIn: '1h' },
@@ -46,6 +50,8 @@ import { JwtAuthGuard } from './infrastructure/guards/jwt-auth.guard';
     BcryptPasswordHasher,
     JwtTokenService,
     JwtAuthGuard,
+    JwtStrategy,
+    PassportModule,
   ],
 })
 export class AuthModule {}

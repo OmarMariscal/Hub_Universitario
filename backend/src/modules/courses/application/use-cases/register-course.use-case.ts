@@ -1,15 +1,19 @@
 import { BadRequestException } from '@nestjs/common';
-import { ICourseRepository } from '../../../core/domain/ports/course.repository.port';
+import { randomUUID } from 'node:crypto';
 import { Course } from '../../../../core/domain/entities/course.entity';
-import { randomUUID } from 'crypto';
+import { ICourseRepository } from '../../../../core/domain/ports/course.repository.port';
 
-import { RegisterCourseDto } from '../../dtos/register-course.dto';
-
+interface RegisterCourseInput {
+  name: string;
+  professor?: string | null;
+  section?: string | null;
+  userId?: string;
+}
 
 export class RegisterCourseUseCase {
   constructor(private readonly courseRepository: ICourseRepository) {}
 
-  async execute(dto: RegisterCourseDto) {
+  async execute(dto: RegisterCourseInput) {
     if (!dto.name || dto.name.trim() === '') {
       throw new BadRequestException('El nombre del curso es obligatorio');
     }
@@ -19,11 +23,11 @@ export class RegisterCourseUseCase {
       name: dto.name,
       professor: dto.professor ?? null,
       section: dto.section ?? null,
-      userId: 'user-uuid', // placeholder user identifier
+      userId: dto.userId ?? 'user-uuid',
     });
 
     await this.courseRepository.save(course);
-    // Return without exposing internal userId (if any)
+
     return {
       id: course.id,
       name: course.name,
