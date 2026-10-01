@@ -4,7 +4,7 @@ import { Pool } from 'pg';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { IUserRepository } from '../../../../core/domain/ports/user.repository.port';
 import { User } from '../../../../core/domain/entities/user.entity';
-import { PrismaClient } from '../../../../generated/client';
+import { PrismaClient } from '../../../../generated/prisma/client';
 
 @Injectable()
 export class PrismaUserRepository implements IUserRepository, OnModuleDestroy {

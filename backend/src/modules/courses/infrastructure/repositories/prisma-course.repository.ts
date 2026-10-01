@@ -3,7 +3,7 @@ import { Pool } from 'pg';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { ICourseRepository } from '../../../../core/domain/ports/course.repository.port';
 import { Course } from '../../../../core/domain/entities/course.entity';
-import { PrismaClient } from '../../../../generated/client';
+import { PrismaClient } from '../../../../generated/prisma/client';
 
 @Injectable()
 export class PrismaCourseRepository implements ICourseRepository, OnModuleDestroy {
