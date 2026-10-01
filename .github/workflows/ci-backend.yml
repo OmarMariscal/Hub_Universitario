@@ -51,6 +51,9 @@ jobs:
         cache: 'npm'
         cache-dependency-path: ./backend/package-lock.json
 
+    - name: 🔍 Verificar archivos en el entorno
+      run: ls -la
+
     - name: 📦 Instalar dependencias
       run: npm ci # Instalación limpia basada en package-lock.json
 

@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
-import { AcademicActivityModule } from './core/infrastructure/modules/academic-activity.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { CoursesModule } from './modules/courses/courses.module';
 
 @Module({
-  imports: [AcademicActivityModule],
+  imports: [AuthModule, CoursesModule],
   controllers: [],
   providers: [],
 })
